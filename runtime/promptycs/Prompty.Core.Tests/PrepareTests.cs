@@ -16,7 +16,7 @@ namespace Prompty.Core.Tests
     {
         public PrepareTests()
         {
-            InvokerFactory.AutoDiscovery();
+            //InvokerFactory.AutoDiscovery();
             Environment.SetEnvironmentVariable("AZURE_OPENAI_ENDPOINT", "ENDPOINT_VALUE");
         }
 

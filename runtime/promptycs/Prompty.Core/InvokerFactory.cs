@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Prompty.Core.Parsers;
+using Prompty.Core.Renderers;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +20,20 @@ namespace Prompty.Core
         private readonly ConcurrentDictionary<string, Type> _executors = [];
         private readonly ConcurrentDictionary<string, Type> _processors = [];
 
-        private InvokerFactory() { }
+        private InvokerFactory() 
+        {
+            // register internal Invokers by default
+            RegisterInvoker("jinja2", InvokerType.Renderer, typeof(LiquidRenderer));
+            RegisterInvoker("liquid", InvokerType.Renderer, typeof(LiquidRenderer));
+            RegisterInvoker("NOOP", InvokerType.Renderer, typeof(NoOpInvoker));
+            RegisterInvoker("NOOP", InvokerType.Parser, typeof(NoOpInvoker));
+            RegisterInvoker("NOOP", InvokerType.Executor, typeof(NoOpInvoker));
+            RegisterInvoker("NOOP", InvokerType.Processor, typeof(NoOpInvoker));
+            RegisterInvoker("prompty.embedding", InvokerType.Parser, typeof(NoOpInvoker));
+            RegisterInvoker("prompty.image", InvokerType.Parser, typeof(NoOpInvoker));
+            RegisterInvoker("prompty.completion", InvokerType.Parser, typeof(NoOpInvoker));
+            RegisterInvoker("prompty.chat", InvokerType.Parser, typeof(PromptyChatParser));
+        }
 
 
         public void RegisterInvoker(string name, InvokerType invokerType, Type type)

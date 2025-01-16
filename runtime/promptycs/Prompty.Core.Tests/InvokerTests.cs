@@ -26,7 +26,7 @@ namespace Prompty.Core.Tests
     {
         public InvokerTests()
         {
-            InvokerFactory.AutoDiscovery();
+            //InvokerFactory.AutoDiscovery();
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace Prompty.Core.Tests
             Assert.True(InvokerFactory.Instance.IsRegistered("prompty.embedding", InvokerType.Parser));
             Assert.True(InvokerFactory.Instance.IsRegistered("prompty.image", InvokerType.Parser));
             Assert.True(InvokerFactory.Instance.IsRegistered("prompty.completion", InvokerType.Parser));
-            Assert.True(InvokerFactory.Instance.IsRegistered("fake", InvokerType.Executor));
+            //Assert.True(InvokerFactory.Instance.IsRegistered("fake", InvokerType.Executor));
             Assert.True(InvokerFactory.Instance.IsRegistered("prompty.chat", InvokerType.Parser));
         }
 
@@ -56,6 +56,7 @@ namespace Prompty.Core.Tests
         [Fact]
         public void ExecutionTest()
         {
+            InvokerFactory.Instance.RegisterExecutor("fake", typeof(FakeInvoker));
             var invoker = InvokerFactory.Instance.CreateInvoker("fake", InvokerType.Executor, new Prompty());
             var result = invoker.Invoke("test");
             Assert.True((bool)result);
@@ -87,5 +88,15 @@ namespace Prompty.Core.Tests
             Assert.NotNull(invokerType);
             Assert.Equal(typeof(LiquidRenderer), invokerType);
         }
+
+        [Fact]
+        public void RegisterInvokerTest()
+        {
+            InvokerFactory.Instance.RegisterRenderer("fake", typeof(FakeInvoker));
+            Assert.True(InvokerFactory.Instance.IsRegistered("fake", InvokerType.Renderer));
+            var invoker = InvokerFactory.Instance.CreateInvoker("fake", InvokerType.Renderer, new Prompty());
+            Assert.NotNull(invoker);
+            Assert.IsType<FakeInvoker>(invoker);
+        }   
     }
 }
